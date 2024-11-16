@@ -1,3 +1,4 @@
+import 'dart:ffi';
 import 'dart:io';
 
 import 'package:flutter/material.dart';
@@ -43,7 +44,7 @@ class _AddProductScreenState extends State<AddProductScreen> {
 
 Future<void> _pickImages() async {
     try {
-      final XFile? image = await _picker.pickImage(source: ImageSource.gallery);
+      final XFile? image = await _picker.pickImage(source: ImageSource.camera);
 
       if (image != null) {
         setState(() {
@@ -52,7 +53,7 @@ Future<void> _pickImages() async {
       } else {
         // User canceled the picker
         ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: Text('No image selected.')),
+        const  SnackBar(content: Text('No image selected.')),
         );
       }
     } catch (e) {
@@ -99,6 +100,29 @@ Future<void> _pickImages() async {
                       child: const Icon(Icons.add_a_photo),
                     ),
                   ),
+                  const SizedBox(height: 14,),
+                  if(_selectedImage !=null) ...[
+                    Container(
+                      decoration: BoxDecoration(
+                        color: Colors.grey[400],
+                        border: Border.all(
+                          color: const Color.fromARGB(255, 45, 45, 45)
+                        ),
+                      ),
+                      
+                      height: 80,
+                      width: 80,
+                      child: Image.file(_selectedImage!, fit: BoxFit.cover,),
+                    ),
+                    InkWell(
+                      onTap: () {
+                        setState(() {
+                          _selectedImage = null;
+                        });
+                      },
+                      child: const Text('Remove',textAlign: TextAlign.center,)),
+                  ],
+                  
                   const SizedBox(height: 14,),
                   TextFormField(
                    validator: (value) {
