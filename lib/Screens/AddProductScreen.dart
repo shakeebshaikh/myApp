@@ -1,4 +1,7 @@
+import 'dart:io';
+
 import 'package:flutter/material.dart';
+import 'package:image_picker/image_picker.dart';
 
 class AddProductScreen extends StatefulWidget {
   const AddProductScreen({super.key});
@@ -18,6 +21,8 @@ class _AddProductScreenState extends State<AddProductScreen> {
     fontWeight: FontWeight.bold,
     fontSize: 18,
   );
+  final ImagePicker _picker = ImagePicker();
+  File? _selectedImage;
 
 
 
@@ -35,6 +40,27 @@ class _AddProductScreenState extends State<AddProductScreen> {
       );
     }
 }
+
+Future<void> _pickImages() async {
+    try {
+      final XFile? image = await _picker.pickImage(source: ImageSource.gallery);
+
+      if (image != null) {
+        setState(() {
+          _selectedImage = File(image.path);
+        });
+      } else {
+        // User canceled the picker
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text('No image selected.')),
+        );
+      }
+    } catch (e) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text('Error picking image: $e')),
+      );
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -55,18 +81,23 @@ class _AddProductScreenState extends State<AddProductScreen> {
                     'Product Image',
                     style: formLableStyle,
                   ),
-                  Container(
-                    decoration: BoxDecoration(
-                      color: Colors.grey[400],
-                      border: Border.all(
-                        color: const Color.fromARGB(255, 45, 45, 45)
+                  InkWell(
+                    onTap: (){
+                      _pickImages();
+                    },
+                    child: Container(
+                      decoration: BoxDecoration(
+                        color: Colors.grey[400],
+                        border: Border.all(
+                          color: const Color.fromARGB(255, 45, 45, 45)
+                        ),
+                        borderRadius: BorderRadius.circular(8)
                       ),
-                      borderRadius: BorderRadius.circular(8)
+                      
+                      height: 80,
+                      width: 80,
+                      child: const Icon(Icons.add_a_photo),
                     ),
-                    
-                    height: 80,
-                    width: 80,
-                    child: const Icon(Icons.add_a_photo),
                   ),
                   const SizedBox(height: 14,),
                   TextFormField(
