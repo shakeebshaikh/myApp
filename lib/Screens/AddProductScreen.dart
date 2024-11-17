@@ -26,41 +26,37 @@ class _AddProductScreenState extends State<AddProductScreen> {
   final ImagePicker _picker = ImagePicker();
   File? _selectedImage;
 
+  void _saveProduct() async {
+    if (_formKey.currentState!.validate()) {
+      try {
+        final productService = ProductService();
+        await productService.addProduct(
+          name: _nameController.text.trim(),
+          price: double.parse(_priceController.text.trim()),
+          offerPrice: double.parse(_offerPriceController.text.trim()),
+          quantity: int.parse(_quantityController.text.trim()),
+          description: _descriptionController.text.trim(),
+          imagePaths: _selectedImage!, // Ensure this is a List<String>
+        );
 
-
- void _saveProduct() async {
-  if (_formKey.currentState!.validate()) {
-    try {
-      final productService = ProductService();
-      await productService.addProduct(
-        name: _nameController.text.trim(),
-        price: double.parse(_priceController.text.trim()),
-        offerPrice: double.parse(_offerPriceController.text.trim()),
-        quantity: int.parse(_quantityController.text.trim()),
-        description: _descriptionController.text.trim(),
-        imagePaths: _selectedImage!, // Ensure this is a List<String>
-      );
-
-
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text('Product added successfully!')),
-      );
-      Navigator.pop(context); // Navigate back after saving
-    } catch (e) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text('Failed to add product: $e')),
-      );
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(content: Text('Product added successfully!')),
+        );
+        Navigator.pop(context); // Navigate back after saving
+        Navigator.of(context).push(MaterialPageRoute(
+          builder: (context) {
+            return const HomeScreen();
+          },
+        ));
+      } catch (e) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text('Failed to add product: $e')),
+        );
+      }
     }
   }
-  Navigator.of(context).push(MaterialPageRoute(
-    builder: (context) {
-      return const HomeScreen();
-    },
-  ));
-}
 
-
-Future<void> _pickImages() async {
+  Future<void> _pickImages() async {
     try {
       final XFile? image = await _picker.pickImage(source: ImageSource.camera);
 
@@ -71,7 +67,7 @@ Future<void> _pickImages() async {
       } else {
         // User canceled the picker
         ScaffoldMessenger.of(context).showSnackBar(
-        const  SnackBar(content: Text('No image selected.')),
+          const SnackBar(content: Text('No image selected.')),
         );
       }
     } catch (e) {
@@ -101,70 +97,77 @@ Future<void> _pickImages() async {
                     style: formLableStyle,
                   ),
                   InkWell(
-                    onTap: (){
+                    onTap: () {
                       _pickImages();
                     },
                     child: Container(
                       decoration: BoxDecoration(
-                        color: Colors.grey[400],
-                        border: Border.all(
-                          color: const Color.fromARGB(255, 45, 45, 45)
-                        ),
-                        borderRadius: BorderRadius.circular(8)
-                      ),
-                      
+                          color: Colors.grey[400],
+                          border: Border.all(
+                              color: const Color.fromARGB(255, 45, 45, 45)),
+                          borderRadius: BorderRadius.circular(8)),
                       height: 80,
                       width: 80,
                       child: const Icon(Icons.add_a_photo),
                     ),
                   ),
-                  const SizedBox(height: 14,),
-                  if(_selectedImage !=null) ...[
+                  const SizedBox(
+                    height: 14,
+                  ),
+                  if (_selectedImage != null) ...[
                     Container(
                       decoration: BoxDecoration(
                         color: Colors.grey[400],
                         border: Border.all(
-                          color: const Color.fromARGB(255, 45, 45, 45)
-                        ),
+                            color: const Color.fromARGB(255, 45, 45, 45)),
                       ),
                       height: 80,
                       width: 80,
-                      child: Image.file(_selectedImage!, fit: BoxFit.cover,),
+                      child: Image.file(
+                        _selectedImage!,
+                        fit: BoxFit.cover,
+                      ),
                     ),
                     InkWell(
-                      onTap: () {
-                        setState(() {
-                          _selectedImage = null;
-                        });
-                      },
-                      child: const Text('Remove',textAlign: TextAlign.center,)),
+                        onTap: () {
+                          setState(() {
+                            _selectedImage = null;
+                          });
+                        },
+                        child: const Text(
+                          'Remove',
+                          textAlign: TextAlign.center,
+                        )),
                   ],
-                  
-                  const SizedBox(height: 14,),
+                  const SizedBox(
+                    height: 14,
+                  ),
                   TextFormField(
-                   validator: (value) {
-                  if (value == null || value.trim().isEmpty) {
-                    return 'Product name is required';
-                  }
-                  return null;
-                },
-              controller: _nameController,
+                    validator: (value) {
+                      if (value == null || value.trim().isEmpty) {
+                        return 'Product name is required';
+                      }
+                      return null;
+                    },
+                    controller: _nameController,
                     decoration: const InputDecoration(
                         border: OutlineInputBorder(),
                         hintText: 'Enter Product Name',
                         labelText: 'Product Name'),
                   ),
-                  const SizedBox(height: 14,),
+                  const SizedBox(
+                    height: 14,
+                  ),
                   TextFormField(
                     validator: (value) {
-                  if (value == null || value.trim().isEmpty) {
-                    return 'Price is required';
-                  }
-                  if (double.tryParse(value) == null) {
-                    return 'Enter a valid number';
-                  }
-                  return null;
-                },
+                      if (value == null || value.trim().isEmpty) {
+                        return 'Price is required';
+                      }
+                      if (double.tryParse(value) == null) {
+                        return 'Enter a valid number';
+                      }
+                      return null;
+                    },
                     controller: _priceController,
                     keyboardType: TextInputType.number,
                     decoration: const InputDecoration(
@@ -172,17 +175,19 @@ Future<void> _pickImages() async {
                         hintText: 'Enter Product Price',
                         labelText: 'Product Price'),
                   ),
-                  const SizedBox(height: 14,),
+                  const SizedBox(
+                    height: 14,
+                  ),
                   TextFormField(
                     validator: (value) {
-                  if (value == null || value.trim().isEmpty) {
-                    return 'Offer Price is required';
-                  }
-                  if (double.tryParse(value) == null) {
-                    return 'Enter a valid number';
-                  }
-                  return null;
-                },
+                      if (value == null || value.trim().isEmpty) {
+                        return 'Offer Price is required';
+                      }
+                      if (double.tryParse(value) == null) {
+                        return 'Enter a valid number';
+                      }
+                      return null;
+                    },
                     controller: _offerPriceController,
                     keyboardType: TextInputType.number,
                     decoration: const InputDecoration(
@@ -190,17 +195,19 @@ Future<void> _pickImages() async {
                         hintText: 'Enter Product Offer Price',
                         labelText: 'Product Offer Price'),
                   ),
-                  const SizedBox(height: 14,),
+                  const SizedBox(
+                    height: 14,
+                  ),
                   TextFormField(
                     validator: (value) {
-                  if (value == null || value.trim().isEmpty) {
-                    return 'Quantity is required';
-                  }
-                  if (double.tryParse(value) == null) {
-                    return 'Enter a valid number';
-                  }
-                  return null;
-                },
+                      if (value == null || value.trim().isEmpty) {
+                        return 'Quantity is required';
+                      }
+                      if (double.tryParse(value) == null) {
+                        return 'Enter a valid number';
+                      }
+                      return null;
+                    },
                     controller: _quantityController,
                     keyboardType: TextInputType.number,
                     decoration: const InputDecoration(
@@ -208,27 +215,31 @@ Future<void> _pickImages() async {
                         hintText: 'Enter Product Quantity',
                         labelText: 'Product Quantity'),
                   ),
-                  const SizedBox(height: 14,),
+                  const SizedBox(
+                    height: 14,
+                  ),
                   TextFormField(
                     validator: (value) {
-                  if (value == null || value.trim().isEmpty) {
-                    return 'Product name is required';
-                  }
-                  return null;
-                },
+                      if (value == null || value.trim().isEmpty) {
+                        return 'Product name is required';
+                      }
+                      return null;
+                    },
                     controller: _descriptionController,
                     decoration: const InputDecoration(
                         border: OutlineInputBorder(),
                         hintText: 'Enter Product Description',
                         labelText: 'Product Description'),
                   ),
-                  const SizedBox(height: 14,),
+                  const SizedBox(
+                    height: 14,
+                  ),
                   Center(
                     child: ElevatedButton(
-                      onPressed: (){
-                        _saveProduct();
-                      }, 
-                    child:const Text('Save Product')),
+                        onPressed: () {
+                          _saveProduct();
+                        },
+                        child: const Text('Save Product')),
                   )
                 ],
               ),
@@ -239,5 +250,3 @@ Future<void> _pickImages() async {
     );
   }
 }
-
-
