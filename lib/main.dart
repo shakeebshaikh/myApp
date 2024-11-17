@@ -1,7 +1,15 @@
 import 'package:flutter/material.dart';
+import 'package:hive_flutter/hive_flutter.dart';
+import 'package:my_app/Models/file_adapter.dart';
+import 'package:my_app/Models/product_model.dart';
 import 'package:my_app/Screens/HomeScreen.dart';
 
-void main() {
+void main() async{
+  WidgetsFlutterBinding.ensureInitialized();
+  await Hive.initFlutter();
+  Hive.registerAdapter(FileAdapter());
+  Hive.registerAdapter(ProductAdapter());
+  await Hive.openBox<Product>('products');
   runApp(const MyApp());
 }
 
