@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:my_app/Screens/ProductDetailsScreen.dart';
 import 'package:my_app/UI/EndDrawer.dart';
 import 'package:hive/hive.dart';
 import 'package:my_app/Models/product_model.dart';
@@ -19,8 +20,6 @@ class _HomeScreenState extends State<HomeScreen> {
 
       // Get all products as a list
       List<Product> productList = box.values.toList();
-      print('productList------------------');
-      print(productList[0].name);
       return productList;
       
     } catch (e) {
@@ -58,11 +57,20 @@ class _HomeScreenState extends State<HomeScreen> {
                     itemCount: products.length,
                     itemBuilder: (context, index) {
                       final product = products[index];
-                      return ListTile(
-                        leading: Image.file(product.imagePath!),
-                        title: Text(product.name),
-                        subtitle: Text('Price: \$${product.price}'),
-                        trailing: product.quantity>0 ? const Icon(Icons.shopping_cart_checkout) :const Text('Out of Stock'),
+                      return InkWell(
+                        onTap: () {
+                          Navigator.of(context).push(MaterialPageRoute(
+                            builder: (context) {
+                              return ProductDetailsScreen(product: product,);
+                            },
+                          ));
+                        },
+                        child: ListTile(
+                          leading: Image.file(product.imagePath!),
+                          title: Text(product.name),
+                          subtitle: Text('Price: \$${product.price}'),
+                          trailing: product.quantity>0 ? const Icon(Icons.shopping_cart_checkout) :const Text('Out of Stock'),
+                        ),
                       );
                     },
                   ),
