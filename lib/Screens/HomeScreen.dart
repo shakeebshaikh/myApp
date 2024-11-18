@@ -36,6 +36,9 @@ class _HomeScreenState extends State<HomeScreen> {
         drawer: const EndDrawer(),
         appBar: AppBar(
           title: const Text('My App'),
+          actions: const [
+             Icon(Icons.shopping_cart_outlined)
+          ],
         ),
         body: Column(
           children: [
@@ -69,7 +72,7 @@ class _HomeScreenState extends State<HomeScreen> {
                           leading: Image.file(product.imagePath!),
                           title: Text(product.name),
                           subtitle: Text('Price: \$${product.price}'),
-                          trailing: product.quantity>0 ? const Icon(Icons.shopping_cart_checkout) :const Text('Out of Stock'),
+                          trailing: product.quantity>0 ? const Icon(Icons.add_shopping_cart_sharp) :const Text('Out of Stock'),
                         ),
                       );
                     },
