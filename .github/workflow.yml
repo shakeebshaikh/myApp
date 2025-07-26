@@ -17,7 +17,7 @@ jobs:
       - name: Set up Flutter
         uses: subosito/flutter-action@v2
         with:
-          flutter-version: '3.22.1' # Update this to your Flutter version
+          flutter-version: '3.22.1' # Set this to your actual version
           channel: 'stable'
 
       - name: Install dependencies
@@ -29,10 +29,10 @@ jobs:
       - name: Run Flutter tests
         run: flutter test
 
-      - name: Build Android APK
+      - name: Build APK
         run: flutter build apk --release
 
-      - name: Upload Release APK
+      - name: Upload APK
         uses: actions/upload-artifact@v3
         with:
           name: app-release.apk
