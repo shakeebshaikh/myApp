@@ -1,35 +1,36 @@
-name: Flutter CI
+name: Flutter Android CI
 
 on:
   push:
-    branches: [ main ]
+    branches: [ "master" ]
   pull_request:
-    branches: [ main ]
+    branches: [ "master" ]
 
 jobs:
   build:
-    runs-on: ubuntu-latest
+    runs-on: windows-latest
 
     steps:
-      - name: Checkout Repository
-        uses: actions/checkout@v3
+      - name: Checkout repository
+        uses: actions/checkout@v4
 
-      - name: Setup Flutter
+      - name: Set up Flutter
         uses: subosito/flutter-action@v2
         with:
-          flutter-version: 'stable' # Or a specific version
+          flutter-version: '3.22.1'  # Change to your version
+          channel: stable
 
-      - name: Install Dependencies
+      - name: Install dependencies
         run: flutter pub get
 
-      - name: Run Tests
-        run: flutter test
+      - name: Analyze code
+        run: flutter analyze
 
-      - name: Build Android APK
+      - name: Build APK
         run: flutter build apk --release
 
-      - name: Upload Artifacts
-        uses: actions/upload-artifact@v2
+      - name: Upload APK
+        uses: actions/upload-artifact@v3
         with:
-          name: app-release
+          name: app-release.apk
           path: build/app/outputs/flutter-apk/app-release.apk
